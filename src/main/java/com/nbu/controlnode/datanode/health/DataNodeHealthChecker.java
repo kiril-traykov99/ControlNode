@@ -1,10 +1,5 @@
 package com.nbu.controlnode.datanode.health;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import com.nbu.controlnode.datanode.DataNode;
 import com.nbu.controlnode.datanode.DataNodeEndpoint;
 import com.nbu.controlnode.datanode.DataNodeService;
-import com.nbu.controlnode.service.ScalingService;
+import com.nbu.controlnode.service.scaling.ScalingService;
 
 @Lazy(false)
 @Component
@@ -33,7 +28,6 @@ public class DataNodeHealthChecker {
     private final Set<DataNode> unhealthyDataNodeSet = new HashSet<>();
 
     RestTemplate restTemplate = new RestTemplate();
-
 
     public DataNodeHealthChecker(DataNodeService dataNodeService, ScalingService scalingService, ApplicationEventPublisher applicationEventPublisher) {
         this.dataNodeService = dataNodeService;
@@ -62,7 +56,7 @@ public class DataNodeHealthChecker {
             response = this.restTemplate.getForEntity(buildUrl(dataNode.getDataNodeEndpoint()), HealthStatus.class);
         long finish = System.currentTimeMillis();
         if (response.getStatusCode() == HttpStatus.OK && finish - start < 1000) {
-            scalingService.checkIfClusterNeedsRebalancing(response.getBody());
+            scalingService.checkIfClusterNeedsRebalancing(response.getBody(), dataNode);
             System.out.println(dataNode.getDataNodeId() + " is healthy");
         } else {
             unhealthyDataNodeSet.add(dataNode);
@@ -75,6 +69,7 @@ public class DataNodeHealthChecker {
     }
 
     private void markNodeAsUnhealthy(DataNode dataNode) {
+        System.out.println("Data node at port " + dataNode.getDataNodeEndpoint().getDataNodeContactPoint().port() + "needs replacing");
         applicationEventPublisher.publishEvent(new DataNodeNeedsReplacingNotification(this, dataNode));
     }
 

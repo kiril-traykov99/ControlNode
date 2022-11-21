@@ -27,13 +27,14 @@ public class DataNodeService implements ApplicationListener<ApplicationEvent> {
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof DataNodeAddedNotification) {
-            DataNode dataNode = new DataNode(((DataNodeAddedNotification) event).getDataNodeEndpoint(), UUID.randomUUID(), DataNodeType.Local);
+        if (event instanceof DataNodeAddedNotification addedNotification) {
+            Integer position = addedNotification.getPosition();
+            DataNode dataNode = new DataNode(addedNotification.getDataNodeEndpoint(), UUID.randomUUID(), DataNodeType.Local, position);
             dataNodes.add(dataNode);
             hashingService.newDNAdded(dataNode);
         } else if (event instanceof DataNodeReplacedNotification dataNodeReplacedNotification) {
             System.out.println("DN replace notification recieved by DN service");
-            DataNode dataNode = new DataNode(dataNodeReplacedNotification.getDockerDataNodeEndpoint(), dataNodeReplacedNotification.getId(), DataNodeType.Local);
+            DataNode dataNode = new DataNode(dataNodeReplacedNotification.getDockerDataNodeEndpoint(), dataNodeReplacedNotification.getId(), DataNodeType.Local, dataNodeReplacedNotification.getPosition());
             DataNode dataNodeToRemove = dataNodes.stream().filter(dn -> dn.dataNodeId.equals(dataNodeReplacedNotification.getId())).findFirst().get();
             dataNodes.remove(dataNodeToRemove);
             dataNodes.add(dataNode);

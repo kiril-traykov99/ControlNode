@@ -2,22 +2,19 @@ package com.nbu.controlnode.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.nbu.controlnode.datanode.health.HealthStatus;
 
-@Service
 public class StartUpService {
 
-    RestTemplate restTemplate = new RestTemplate();
-
-
     public void awaitForStartup(int dnPort) {
+        RestTemplate restTemplate = new RestTemplate();
+
         while (true) {
             ResponseEntity<HealthStatus> response = null;
             try {
-                response = this.restTemplate.getForEntity(buildUrl(dnPort), HealthStatus.class);
+                response = restTemplate.getForEntity(buildUrl(dnPort), HealthStatus.class);
                 if (response.getStatusCode() == HttpStatus.OK) {
                     return;
                 } else {

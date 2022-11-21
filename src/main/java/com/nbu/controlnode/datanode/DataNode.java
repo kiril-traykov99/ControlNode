@@ -10,11 +10,13 @@ public class DataNode {
     DataNodeEndpoint dataNodeEndpoint;
     UUID dataNodeId;
     DataNodeType dataNodeType;
+    Integer position;
 
-    public DataNode(DataNodeEndpoint dataNodeEndpoint, UUID dataNodeId, DataNodeType dataNodeType) {
+    public DataNode(DataNodeEndpoint dataNodeEndpoint, UUID dataNodeId, DataNodeType dataNodeType, Integer position) {
         this.dataNodeEndpoint = dataNodeEndpoint;
         this.dataNodeId = dataNodeId;
         this.dataNodeType = dataNodeType;
+        this.position = position;
     }
 
     public DataNodeEndpoint getDataNodeEndpoint() {
@@ -37,6 +39,10 @@ public class DataNode {
         return dataNodeType;
     }
 
+    public Integer getPosition() {
+        return position;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -46,12 +52,12 @@ public class DataNode {
             return false;
         }
         DataNode dataNode = (DataNode) o;
-        return Objects.equals(dataNodeEndpoint, dataNode.dataNodeEndpoint) && Objects.equals(dataNodeId, dataNode.dataNodeId) && dataNodeType == dataNode.dataNodeType;
+        return Objects.equals(dataNodeEndpoint, dataNode.dataNodeEndpoint) && Objects.equals(dataNodeId, dataNode.dataNodeId) && dataNodeType == dataNode.dataNodeType && Objects.equals(position, dataNode.position);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dataNodeEndpoint, dataNodeId, dataNodeType);
+        return Objects.hash(dataNodeEndpoint, dataNodeId, dataNodeType, position);
     }
 
     @Override
@@ -60,6 +66,7 @@ public class DataNode {
                 .add("dataNodeEndpoint", dataNodeEndpoint)
                 .add("dataNodeId", dataNodeId)
                 .add("dataNodeType", dataNodeType)
+                .add("position", position)
                 .toString();
     }
 }

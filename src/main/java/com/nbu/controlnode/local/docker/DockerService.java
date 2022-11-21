@@ -23,16 +23,14 @@ public class DockerService {
     private final String imageName;
     private final DockerClient dockerClient;
     private volatile int freePortCounter = 8081; //Port to which the container would bind, 8080 is the control node so 8081 is the first available
-    private static final int dataNodePort = 8080; //The container's exposed port before binding
+    private static final int dataNodePort = 8085; //The container's exposed port before binding
     private static final String dataNodeContainerNameTemplate = "dataNode";
-    private final StartUpService startUpService;
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    DockerService(DistributedCacheConfig distributedCacheConfig, DockerClientFactory dockerClientFactory, StartUpService startUpService, ApplicationEventPublisher applicationEventPublisher) {
+    DockerService(DistributedCacheConfig distributedCacheConfig, DockerClientFactory dockerClientFactory, ApplicationEventPublisher applicationEventPublisher) {
         this.imageName = distributedCacheConfig.getConfig().getImageName();
         this.dockerClient = dockerClientFactory.getDockerClient();
-        this.startUpService = startUpService;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -50,7 +48,7 @@ public class DockerService {
     public void startDN() {
         CreateContainerResponse createContainerResponse = prepareContainerObject();
         dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
-        applicationEventPublisher.publishEvent(new DataNodeAddedNotification(this, new DockerDataNodeEndpoint("localhost", freePortCounter)));
+        applicationEventPublisher.publishEvent(new DataNodeAddedNotification(this, new DockerDataNodeEndpoint("localhost", freePortCounter), null));
         freePortCounter++;
     }
 
@@ -71,8 +69,18 @@ public class DockerService {
         dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
         System.out.println("new dn created");
         System.out.println(freePortCounter);
-        startUpService.awaitForStartup(freePortCounter);
-        applicationEventPublisher.publishEvent(new DataNodeReplacedNotification(this, dataNode.getDataNodeId(), new DockerDataNodeEndpoint("localhost", freePortCounter)));
+        StartUpService service = new StartUpService();
+        service.awaitForStartup(freePortCounter);
+        applicationEventPublisher.publishEvent(new DataNodeReplacedNotification(this, dataNode.getDataNodeId(), new DockerDataNodeEndpoint("localhost", freePortCounter), dataNode.getPosition()));
+        freePortCounter++;
+    }
+
+    public void startDNAtPosition(int position) {
+        CreateContainerResponse createContainerResponse = prepareContainerObject();
+        dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
+        StartUpService service = new StartUpService();
+        service.awaitForStartup(freePortCounter);
+        applicationEventPublisher.publishEvent(new DataNodeAddedNotification(this, new DockerDataNodeEndpoint("localhost", freePortCounter), position));
         freePortCounter++;
     }
 }

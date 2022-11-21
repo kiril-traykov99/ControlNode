@@ -49,4 +49,18 @@ public class DataNodeManager implements ApplicationListener<DataNodeNeedsReplaci
         }
         return Results.Added;
     }
+
+    public void addDataNodeAtPosition(int position) {
+            if (scalingStrategy.equals(ScalingStrategy.LOCAL)) {
+                dockerService.startDNAtPosition(position);
+            } else if (ScalingStrategy.AWS.equals(scalingStrategy)) {
+
+            } else {
+                if (RandomGenerator.getDefault().nextInt() % 2 == 0) {
+                    dockerService.startDNAtPosition(position);
+                } else {
+
+                }
+            }
+    }
 }
