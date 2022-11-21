@@ -17,7 +17,7 @@ public class RehashingResponseBody {
         this.jsonData = jsonData;
     }
 
-    public Map<String, Object> getJsonData() {
+    public Map<String, Object> getData() {
         return jsonData;
     }
 

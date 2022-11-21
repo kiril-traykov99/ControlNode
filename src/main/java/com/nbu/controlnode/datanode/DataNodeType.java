@@ -1,6 +1,6 @@
 package com.nbu.controlnode.datanode;
 
-enum DataNodeType {
+public enum DataNodeType {
     Local,
     AWS
 }

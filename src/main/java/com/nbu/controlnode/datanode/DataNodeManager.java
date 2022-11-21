@@ -34,12 +34,12 @@ public class DataNodeManager implements ApplicationListener<DataNodeNeedsReplaci
     public Result addDataNode() {
         try {
             if (scalingStrategy.equals(ScalingStrategy.LOCAL)) {
-                dockerService.startDN();
+                dockerService.startDN(false);
             } else if (ScalingStrategy.AWS.equals(scalingStrategy)) {
 
             } else {
                 if (RandomGenerator.getDefault().nextInt() % 2 == 0) {
-                    dockerService.startDN();
+                    dockerService.startDN(false);
                 } else {
 
                 }

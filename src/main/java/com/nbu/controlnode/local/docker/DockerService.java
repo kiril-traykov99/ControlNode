@@ -45,10 +45,10 @@ public class DockerService {
 
     }
 
-    public void startDN() {
+    public void startDN(boolean isStartingUp) {
         CreateContainerResponse createContainerResponse = prepareContainerObject();
         dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
-        applicationEventPublisher.publishEvent(new DataNodeAddedNotification(this, new DockerDataNodeEndpoint("localhost", freePortCounter), null));
+        applicationEventPublisher.publishEvent(new DataNodeAddedNotification(this, new DockerDataNodeEndpoint("localhost", freePortCounter), null, isStartingUp));
         freePortCounter++;
     }
 
@@ -80,7 +80,7 @@ public class DockerService {
         dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
         StartUpService service = new StartUpService();
         service.awaitForStartup(freePortCounter);
-        applicationEventPublisher.publishEvent(new DataNodeAddedNotification(this, new DockerDataNodeEndpoint("localhost", freePortCounter), position));
+        applicationEventPublisher.publishEvent(new DataNodeAddedNotification(this, new DockerDataNodeEndpoint("localhost", freePortCounter), position, false));
         freePortCounter++;
     }
 }

@@ -20,7 +20,7 @@ public class LocalInitializer implements InitializerStrategy {
     @Override
     public void initialize() {
         for (int i = 0; i < initialDataNodes; i++) {
-            dockerService.startDN();
+            dockerService.startDN(true);
         }
     }
 }

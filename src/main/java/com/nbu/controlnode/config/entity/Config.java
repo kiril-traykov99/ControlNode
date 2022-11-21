@@ -5,7 +5,7 @@ public class Config {
     public Config() {
         dockerHost = "localhost";
         dockerPort = "2375";
-        imageName = "dn03";
+        imageName = "dn06";
         replicationFactor = 1;
     }
 

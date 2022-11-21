@@ -1,5 +1,8 @@
 package com.nbu.controlnode.service.rehashing;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -12,14 +15,14 @@ public class RehashingService {
 
     RestTemplate restTemplate = new RestTemplate();
 
-    public RehashingResponseBody rehashKeys(DataNode dataNodeWithKeysToRehash) {
+    public Map<String, HashMap<String, Object>> rehashKeys(DataNode dataNodeWithKeysToRehash) {
         if (dataNodeWithKeysToRehash == null) {
             return null;
         }
-        ResponseEntity<RehashingResponseBody> response;
-        response = this.restTemplate.getForEntity(buildUrl(dataNodeWithKeysToRehash.getDataNodeEndpoint()), RehashingResponseBody.class);
-        response.getBody().jsonData.entrySet().forEach(entry -> System.out.println(entry.toString()));
-        return response.getBody();
+
+        Map<String, HashMap<String, Object>> result = restTemplate.getForObject(buildUrl(dataNodeWithKeysToRehash.getDataNodeEndpoint()),Map.class);
+        System.out.println(result);
+        return result;
     }
 
     private String buildUrl(DataNodeEndpoint dataNodeEndpoint) {
@@ -27,5 +30,9 @@ public class RehashingService {
     }
 
     public void handOverKeysIfPossible(DataNode dataNode) {
+    }
+
+    public void endRehash(DataNode dataNodeWithKeysToRehash) {
+        restTemplate.getForObject(buildUrl(dataNodeWithKeysToRehash.getDataNodeEndpoint())+"/end", Object.class);
     }
 }

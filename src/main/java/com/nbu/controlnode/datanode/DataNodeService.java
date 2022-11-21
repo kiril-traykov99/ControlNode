@@ -31,7 +31,7 @@ public class DataNodeService implements ApplicationListener<ApplicationEvent> {
             Integer position = addedNotification.getPosition();
             DataNode dataNode = new DataNode(addedNotification.getDataNodeEndpoint(), UUID.randomUUID(), DataNodeType.Local, position);
             dataNodes.add(dataNode);
-            hashingService.newDNAdded(dataNode);
+            hashingService.newDNAdded(dataNode, addedNotification.isStartingUp());
         } else if (event instanceof DataNodeReplacedNotification dataNodeReplacedNotification) {
             System.out.println("DN replace notification recieved by DN service");
             DataNode dataNode = new DataNode(dataNodeReplacedNotification.getDockerDataNodeEndpoint(), dataNodeReplacedNotification.getId(), DataNodeType.Local, dataNodeReplacedNotification.getPosition());

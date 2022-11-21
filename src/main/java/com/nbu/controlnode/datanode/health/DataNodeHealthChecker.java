@@ -57,7 +57,7 @@ public class DataNodeHealthChecker {
         long finish = System.currentTimeMillis();
         if (response.getStatusCode() == HttpStatus.OK && finish - start < 1000) {
             scalingService.checkIfClusterNeedsRebalancing(response.getBody(), dataNode);
-            System.out.println(dataNode.getDataNodeId() + " is healthy");
+            System.out.println(dataNode.getDataNodeEndpoint().getDataNodeContactPoint().port() + " is healthy and has " + response.getBody().getNumberOfKeys() + " keys");
         } else {
             unhealthyDataNodeSet.add(dataNode);
             markNodeAsUnhealthy(dataNode);
