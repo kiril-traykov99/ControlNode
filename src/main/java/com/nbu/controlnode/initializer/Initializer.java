@@ -27,7 +27,6 @@ private final ConsistentHashingService consistentHashingService;
     @EventListener(ApplicationReadyEvent.class)
     public void initializeDataCluster() {
         initializerStrategy.initialize();
-        System.out.println("hello world, I have just started up");
 //        consistentHashingService.newDNAdded(new DataNode(new DockerDataNodeEndpoint("localhost", 8085), UUID.randomUUID(), DataNodeType.Local, null));
 
     }

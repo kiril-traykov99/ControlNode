@@ -6,7 +6,7 @@ public final class Results {
         boolean isSuccessful();
     }
 
-    public sealed interface Success extends Result permits Added, Deleted, Disconnected {
+    public sealed interface Success extends Result permits Added, Deleted {
         @Override
         default boolean isSuccessful() {
             return true;
@@ -27,7 +27,6 @@ public final class Results {
 
     public static final Success Deleted = new Deleted();
     public static final Success Added = new Added();
-    public static final Success DISCONNECTED = new Disconnected();
 
     public static final class NodeNotFound implements Failure {
         @Override
@@ -47,5 +46,4 @@ public final class Results {
 
     private static final class Added implements Success {}
 
-    private static final class Disconnected implements Success {}
 }

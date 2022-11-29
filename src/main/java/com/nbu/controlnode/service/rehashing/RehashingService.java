@@ -3,7 +3,6 @@ package com.nbu.controlnode.service.rehashing;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,7 +28,8 @@ public class RehashingService {
         return String.format("http://%s:%d/v1/api/rehash", dataNodeEndpoint.getDataNodeContactPoint().url(), dataNodeEndpoint.getDataNodeContactPoint().port());
     }
 
-    public void handOverKeysIfPossible(DataNode dataNode) {
+    public Map<String, HashMap<String, Object>> handOverKeysIfPossible(DataNode dataNode) {
+        return restTemplate.getForObject(buildUrl(dataNode.getDataNodeEndpoint()), Map.class);
     }
 
     public void endRehash(DataNode dataNodeWithKeysToRehash) {

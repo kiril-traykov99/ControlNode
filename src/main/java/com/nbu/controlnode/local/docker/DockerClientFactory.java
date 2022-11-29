@@ -25,14 +25,6 @@ public class DockerClientFactory {
 //        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
 //                .withDockerHost("tcp://localhost:2375")
 //                .build();
-//
-//        DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
-//                .dockerHost(config.getDockerHost())
-//                .sslConfig(config.getSSLConfig())
-//                .maxConnections(100)
-//                .connectionTimeout(Duration.ofSeconds(30))
-//                .responseTimeout(Duration.ofSeconds(45))
-//                .build();
         DockerClientConfig dockerClientConfig = buildDockerClientConfig(distributedCacheConfig.getConfig().getDockerHost(), distributedCacheConfig.getConfig().getDockerPort());
         return DockerClientImpl.getInstance(dockerClientConfig, buildHTTPClient(dockerClientConfig));
     }

@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import org.springframework.stereotype.Component;
 
+import com.nbu.controlnode.controller.rest.Response;
 import com.nbu.controlnode.datanode.DataNode;
 import com.nbu.controlnode.datanode.DataNodeCommunicatorHandler;
 import com.nbu.controlnode.service.rehashing.RehashingService;
@@ -95,7 +96,7 @@ public class ConsistentHashingService {
     public void dnReplaced(DataNode dataNode) {
         int position = getPosition(dataNode);
         System.out.println("Data node replaced position:" + position + dataNode.toString());
-        rehashingService.handOverKeysIfPossible(hashCircle.get(dataNode.getDataNodeId().hashCode() % totalCirclePositions));
+        rehashCurrentDNKeys(rehashingService.handOverKeysIfPossible(hashCircle.get(dataNode.getDataNodeId().hashCode() % totalCirclePositions)));
         hashCircle.put(position, dataNode);
     }
 
@@ -123,5 +124,10 @@ public class ConsistentHashingService {
 
     public TreeMap<Integer, DataNode> getHashCircle() {
         return hashCircle;
+    }
+
+    public Response readData(String key) {
+        DataNode dn = hashKey(key);
+        return new Response(dn, dataNodeCommunicatorHandler.readDataFromDn(key, dn));
     }
 }

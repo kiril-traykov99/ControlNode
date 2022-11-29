@@ -1,10 +1,12 @@
 package com.nbu.controlnode.datanode;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -38,4 +40,18 @@ public class DataNodeCommunicatorHandler {
         return String.format("http://%s:%d/v1/api/data/%s", dataNodeEndpoint.getDataNodeContactPoint().url(), dataNodeEndpoint.getDataNodeContactPoint().port(), key);
     }
 
+    public Map<String, Object> readDataFromDn(String key, DataNode dn) {
+        HttpHeaders headers;
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request;
+            request = new HttpEntity<>(null, headers);
+        String url = buildUrl(dn.getDataNodeEndpoint(), key);
+        System.out.println("Trying to execute get request");
+        System.out.println(url);
+        ResponseEntity<Map<String, Object>> r = (ResponseEntity<Map<String, Object>>) this.restTemplate.getForObject(url, Map.class);
+
+        return r.getBody();
+
+    }
 }
