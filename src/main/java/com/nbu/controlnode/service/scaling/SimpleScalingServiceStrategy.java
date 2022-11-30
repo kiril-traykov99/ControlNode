@@ -23,6 +23,6 @@ public class SimpleScalingServiceStrategy implements ScalingServiceStrategy {
 
     @Override
     public int getMaxNumberOfKeysBeforeScalingUp() {
-        return 10;
+        return 100;
     }
 }

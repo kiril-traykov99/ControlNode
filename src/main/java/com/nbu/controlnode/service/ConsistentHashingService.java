@@ -55,9 +55,10 @@ public class ConsistentHashingService {
         if (!tailMap.isEmpty()) {
             dn = hashCircle.get(hashCircle.tailMap(position).firstKey());
         }
-
+        System.out.println(position);
+        System.out.println(tailMap.size());
         if (dn == null) {
-            dn = hashCircle.get(hashCircle.headMap(0).firstKey());
+            dn = hashCircle.get(hashCircle.headMap(totalCirclePositions).firstKey());
         }
         System.out.println(dn.toString() + " identified for key " + key + " at position " + position);
         return dn;
@@ -81,7 +82,7 @@ public class ConsistentHashingService {
     private DataNode findFirstDataNodeToRehash(int position) {
         Optional<DataNode> dataNode = hashCircle.tailMap(position).values().stream().findFirst();
         if(!dataNode.isPresent()) {
-            return hashCircle.get(hashCircle.headMap(0).firstKey());
+            return hashCircle.get(hashCircle.headMap(position).firstKey());
         }
         return dataNode.get();
     }

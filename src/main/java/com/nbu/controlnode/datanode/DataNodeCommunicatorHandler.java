@@ -49,9 +49,9 @@ public class DataNodeCommunicatorHandler {
         String url = buildUrl(dn.getDataNodeEndpoint(), key);
         System.out.println("Trying to execute get request");
         System.out.println(url);
-        ResponseEntity<Map<String, Object>> r = (ResponseEntity<Map<String, Object>>) this.restTemplate.getForObject(url, Map.class);
+        Map<String, Object> r = this.restTemplate.getForObject(url, Map.class);
 
-        return r.getBody();
+        return r;
 
     }
 }
